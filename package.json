@@ -1,5 +1,7 @@
 {
+  "name": "bee-remote",
   "private": true,
+  "repository": "https://github.com/meyer-mcmains/bee-remote.git",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "android": "expo start --android",
