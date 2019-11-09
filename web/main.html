@@ -1,0 +1,25 @@
+<html lang="en" style="background-color: #000;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style type="text/css">
+      html, body {
+        height: 100%;
+        overflow: hidden;
+      }
+    </style>
+</head>
+<body style="margin: 0px;">
+    <iframe src="http://localhost:19006/" style="border: none; height: 100%; width: 100%;">
+</body>
+<script>
+    var path = './';
+    var fs = require('fs');
+    
+    var reloadWatcher=fs.watch(path, function() {
+      location.reload();
+      reloadWatcher.close();
+    });
+  </script>
+</html>

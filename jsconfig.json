@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": false,
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["./src/components/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@types": ["./src/types"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
