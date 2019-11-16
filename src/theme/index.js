@@ -63,7 +63,8 @@ const theme = {
   font: {
     lobster: 'lobster',
     roboto: {
-      black: 'roboto-black'
+      black: 'roboto-black',
+      regular: 'roboto-regular'
     }
   }
 };

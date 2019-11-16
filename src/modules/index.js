@@ -1,3 +1,4 @@
 import * as settings from './settings';
+import * as library from './library';
 
-export { settings };
+export { library, settings };
