@@ -62,11 +62,6 @@
     "react-native-debugger-open": "^0.3.22",
     "uuid": "^3.3.3"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn precommit"
-    }
-  },
   "lint-staged": {
     "*.js": [
       "prettier-eslint --write",
