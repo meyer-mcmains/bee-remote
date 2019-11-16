@@ -7,9 +7,12 @@ module.exports = function (api) {
         {
           alias: {
             '@components': './src/components',
+            '@hooks': './src/hooks/index.js',
+            '@mbApi': './src/mbApi',
             '@modules': './src/modules',
             '@screens': './src/screens',
-            '@types': './src/types.js'
+            '@types': './src/types.js',
+            '@utils': './src/utils'
           },
           root: ['./']
         }

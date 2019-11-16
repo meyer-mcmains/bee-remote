@@ -1,4 +1,6 @@
 {
   "name": "bee-remote",
-  "main": "main.html"
+  "main": "http://localhost:19006/static/js/bundle,js",
+  "node-remote": "<all_urls>",
+  "chromium-args": "--disable-web-security"
 }

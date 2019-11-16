@@ -1,7 +1,9 @@
 {
   "extends": "gsandf-react",
   "globals": {
-    "__DEV__": true
+    "__DEV__": true,
+    "fs": true,
+    "nw": true
   },
   "parser": "babel-eslint",
   "plugins": ["react-hooks"],
