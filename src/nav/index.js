@@ -31,7 +31,7 @@ const Navigator = createBottomTabNavigator(
     }
   },
   {
-    initialRouteName: 'Settings',
+    initialRouteName: 'Music',
     tabBarComponent: Platform.OS === 'web' ? SideBar : TabBar
   }
 );
