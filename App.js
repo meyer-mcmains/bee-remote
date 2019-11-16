@@ -7,6 +7,11 @@ import Main from './src';
 
 YellowBox.ignoreWarnings(['Expected style']);
 
+if (__DEV__) {
+  const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  whyDidYouRender(React);
+}
+
 export default class App extends React.Component {
   state = {
     isAppReady: false,
@@ -16,7 +21,8 @@ export default class App extends React.Component {
   async componentDidMount() {
     await Font.loadAsync({
       lobster: require('./assets/fonts/Lobster-Regular.ttf'),
-      'roboto-black': require('./assets/fonts/Roboto-Black.ttf')
+      'roboto-black': require('./assets/fonts/Roboto-Black.ttf'),
+      'roboto-regular': require('./assets/fonts/Roboto-Regular.ttf')
     });
   }
 
