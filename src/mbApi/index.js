@@ -1,4 +1,5 @@
 import fetchWithTimeout from '@utils/fetchWithTimeout';
+// Local IP
 const IP = 'http://192.168.1.92:1234';
 
 export const getPulse = async () => {
@@ -21,5 +22,5 @@ export const getArtwork = async (artist, album, thumbnail = true) => {
       artist
     )}&album=${encodeURIComponent(album)}&thumbnail=${thumbnail}`
   );
-  return resp.text();
+  return resp.json();
 };
