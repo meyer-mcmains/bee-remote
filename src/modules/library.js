@@ -23,7 +23,7 @@ const getImages = async (dispatch, library) => {
   await mkdir(ARTWORK_DIR);
   library.map(({ artist, albums }, index) => {
     albums.map(async ({ title }) => {
-      const data = await getArtwork(artist, title);
+      const { data, isDark, color } = await getArtwork(artist, title);
       if (data) {
         const file = `${uuid()}.jpg`;
         await writeFile(data, ARTWORK_DIR, file);
@@ -31,7 +31,7 @@ const getImages = async (dispatch, library) => {
           payload: {
             album: title,
             artist,
-            artwork: file
+            artwork: { color, file, isDark }
           },
           type: types.UPDATE_ARTWORK
         });
