@@ -18,3 +18,23 @@ export const SubTitle = styled(TextBase)`
   font-family: ${p => p.theme.font.roboto.black};
   font-size: 28;
 `;
+
+export const H2 = styled(TextBase)`
+  font-family: ${p => p.theme.font.roboto.black};
+  font-size: 24;
+`;
+
+export const BodyRegular = styled(TextBase)`
+  font-family: ${p => p.theme.font.roboto.regular};
+  font-size: 14;
+`;
+
+export const BlackRegular = styled(TextBase)`
+  font-family: ${p => p.theme.font.roboto.black};
+  font-size: 18;
+`;
+
+export const BlackSmall = styled(TextBase)`
+  font-family: ${p => p.theme.font.roboto.black};
+  font-size: 14;
+`;
