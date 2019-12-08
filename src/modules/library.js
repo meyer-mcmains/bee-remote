@@ -9,6 +9,7 @@ const initialState = { data: [], isPending: false };
 
 export const types = {
   ADD_ARTIST: `${prefix}/ADD_ARTIST`,
+  CHANGE_COLOR: `${prefix}/UPDATE_COLOR`,
   GET_LIBRARY: `${prefix}/GET_LIBRARY`,
   PENDING: `${prefix}/PENDING`,
   SUCCESS: `${prefix}/SUCCESS`,
@@ -41,6 +42,16 @@ const getImages = async (dispatch, library) => {
 };
 
 export const actions = {
+  changeColor: (artist, color, title) => dispatch => {
+    dispatch({
+      payload: {
+        album: title,
+        artist,
+        color
+      },
+      type: types.CHANGE_COLOR
+    });
+  },
   getLibrary: () => async (dispatch, getState) => {
     try {
       if (!(await getPulse())) return false;
@@ -92,6 +103,26 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         data: [...state.data, payload]
+      };
+    case types.CHANGE_COLOR:
+      return {
+        ...state,
+        data: updateByField(state.data, 'artist', payload.artist, artist => ({
+          ...artist,
+          albums: updateByField(
+            artist.albums,
+            'title',
+            payload.album,
+            album => ({
+              ...album,
+              artwork: {
+                ...album.artwork,
+                color: payload.color
+              }
+            })
+          )
+        })),
+        isPending: true
       };
     case types.GET_LIBRARY:
       return {
