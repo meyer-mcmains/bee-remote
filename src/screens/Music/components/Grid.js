@@ -1,9 +1,8 @@
-import React, { useLayoutEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useLayoutEffect, useCallback, useState } from 'react';
 import styled from 'styled-components/native';
-import { Platform } from 'react-native';
+import { Animated, Platform } from 'react-native';
 
-import Album from './Album/';
+import Album from './Album';
 import Expanded from './Expanded';
 
 import { ARTWORK_SIZE } from '../config';
@@ -21,12 +20,13 @@ const Wrapper = styled.View`
   flex: 1;
 `;
 
-const Grid = ({ data = [] }) => {
+const Grid = ({ data }) => {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [numRowItems, setNumRowItems] = useState(1);
   const [extra, setExtra] = useState([]);
+  const [color] = useState(new Animated.Value(null));
 
   useLayoutEffect(() => {
     if (data.length > 0) {
@@ -43,7 +43,7 @@ const Grid = ({ data = [] }) => {
         setExtra(extra);
       }
     }
-  }, [containerWidth, data, data.length]);
+  }, [containerWidth, data.length]);
 
   // Store the width of the Container
   const getContainerWidth = ({ nativeEvent }) =>
@@ -54,15 +54,25 @@ const Grid = ({ data = [] }) => {
     setFlatListWidth(nativeEvent.layout.width);
 
   // Set the selected album using the artwork file (because its a UUID)
-  const setSelected = artwork => () => setSelectedAlbum(artwork);
+  const setSelected = (index, item, separators) => () => {
+    setSelectedAlbum(item.artwork.file);
+    color.setValue(item.artwork.color);
+    separators.updateProps('trailing', {
+      color,
+      highlighted: true,
+      index,
+      selected: item
+    });
+  };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ index, item, separators }) => {
+    if ('artwork' in item === false) return <></>;
     if (typeof item.artwork.file === 'string') {
       return (
         <Album
           album={item}
           file={`file://${appData}album-art/${item.artwork.file}`}
-          setSelected={setSelected}
+          setSelected={setSelected(index, item, separators)}
           size={CURRENT_SIZE}
         />
       );
@@ -71,38 +81,34 @@ const Grid = ({ data = [] }) => {
     }
   };
 
-  const itemSeparator = ({ leadingItem }) => {
-    if (Array.isArray(leadingItem)) {
-      const selected = leadingItem.find(
-        item => item.artwork.file === selectedAlbum
-      );
-      const index = leadingItem.findIndex(
-        item => item.artwork.file === selectedAlbum
-      );
+  const itemSeparator = useCallback(
+    ({ highlighted, ...separatorProps }) => {
+      if (!highlighted) return <></>;
+      const { color, index, selected } = separatorProps;
+      if (selected.artwork.file !== selectedAlbum) return <></>;
+
       const leftSlashWidth =
-        (flatListWidth / numRowItems) * (index + 1) -
+        (flatListWidth / numRowItems) * ((index % numRowItems) + 1) -
         (ARTWORK_SIZE[CURRENT_SIZE] + 40) / 2;
       const rightSlashWidth =
-        (flatListWidth / numRowItems) * (numRowItems - index + 1);
-
-      return selected ? (
+        (flatListWidth / numRowItems) *
+        (numRowItems - (index % numRowItems) + 1);
+      return (
         <Expanded
+          color={color}
           size={CURRENT_SIZE}
           leftSlashWidth={leftSlashWidth}
           rightSlashWidth={rightSlashWidth}
           album={selected}
           file={`file://${appData}album-art/${selected.artwork.file}`}
         />
-      ) : (
-        <></>
       );
-    }
-    return <></>;
-  };
+    },
+    [flatListWidth, numRowItems, selectedAlbum]
+  );
 
-  itemSeparator.propTypes = {
-    leadingItem: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
-  };
+  const keyExtractor = item =>
+    (item.artwork && item.artwork.file) || item.title;
 
   return (
     <Wrapper onLayout={getContainerWidth}>
@@ -110,10 +116,10 @@ const Grid = ({ data = [] }) => {
         onLayout={getFlatListWidth}
         ItemSeparatorComponent={itemSeparator}
         key={numRowItems}
-        keyExtractor={item => item.artwork.file || item.title}
+        keyExtractor={keyExtractor}
         numColumns={Platform.OS === 'web' ? numRowItems : 1}
-        data={data.length > 0 ? [...data, ...extra] : []}
-        extraData={data}
+        data={[...data, ...extra]}
+        extraData={color}
         renderItem={renderItem}
       />
     </Wrapper>

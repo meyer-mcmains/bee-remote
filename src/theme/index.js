@@ -16,7 +16,9 @@ const theme = {
     black: '#000',
     border: 'rgba(255,255,255,0.01)',
     primary: '#24242a',
-    white: '#FFFFFF'
+    white: '#FFFFFF',
+    statusRed: '#fe0000',
+    statusGreen: '#0bff01'
   },
   device: {
     isAndroid: Platform.OS === 'android',
