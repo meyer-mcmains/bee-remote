@@ -12,17 +12,24 @@ const Image = styled.img.attrs({ draggable: false })`
   z-index: 1;
 `;
 
-const Artwork = ({ file, size }) => {
+const Artwork = ({ file, size, style }) => {
   const hideOnError = ({ target }) => (target.style.display = 'none');
   const showOnLoad = ({ target }) => (target.style.display = 'block');
   return (
-    <Image src={file} onError={hideOnError} onLoad={showOnLoad} size={size} />
+    <Image
+      src={file}
+      onError={hideOnError}
+      onLoad={showOnLoad}
+      size={size}
+      style={style}
+    />
   );
 };
 
 Artwork.propTypes = {
   file: PropTypes.string.isRequired,
-  size: PropTypes.string.isRequired
+  size: PropTypes.string.isRequired,
+  style: PropTypes.object
 };
 
 export default memo(Artwork);

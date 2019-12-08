@@ -19,7 +19,7 @@ const Wrapper = styled.TouchableOpacity`
 
 const Album = ({ album, file, setSelected, size }) => (
   <Background>
-    <Wrapper onPress={setSelected(album.artwork.file)} size={size}>
+    <Wrapper onPress={setSelected} size={size}>
       <Artwork file={file} size={size} />
     </Wrapper>
   </Background>

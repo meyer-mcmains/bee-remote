@@ -6,10 +6,29 @@ import Icon from '@components/Icon';
 
 import { themeType } from '@types';
 
-const IconButton = ({ icon, onPress, selected, theme }) => (
-  <TouchableOpacity onPress={onPress}>
+const TYPES = {
+  default: 'default',
+  select: 'select'
+};
+
+const IconButton = ({
+  color,
+  icon,
+  onPress,
+  selected = true,
+  style,
+  theme,
+  type = TYPES.default
+}) => (
+  <TouchableOpacity onPress={onPress} style={style}>
     <Icon
-      color={selected ? theme.color.textDefault : theme.color.disabled}
+      color={
+        type === TYPES.select
+          ? selected
+            ? theme.color.textDefault
+            : theme.color.disabled
+          : color
+      }
       name={icon}
       size={30}
     />
@@ -17,10 +36,13 @@ const IconButton = ({ icon, onPress, selected, theme }) => (
 );
 
 IconButton.propTypes = {
+  color: PropTypes.string,
   icon: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   selected: PropTypes.bool,
-  theme: themeType
+  style: PropTypes.array,
+  theme: themeType,
+  type: PropTypes.string
 };
 
 export default IconButton;

@@ -1,7 +1,11 @@
 import styled, { css } from 'styled-components/native';
 import { BlurView } from 'expo-blur';
 
-import { BlackRegular, BlackSmall } from '@components/typography';
+import {
+  AnimatedBlackRegular,
+  AnimatedBlackSmall
+} from '@components/typography';
+
 import { ITEM_HEIGHT } from './Track';
 
 const ANGLE_HEIGHT = 20;
@@ -12,7 +16,7 @@ export const Blur = styled(BlurView)`
   padding-top: ${ANGLE_HEIGHT + 25};
 `;
 
-export const DiskName = styled(BlackRegular)`
+export const DiskName = styled(AnimatedBlackRegular)`
   color: ${p => p.color || p.theme.color.textDefault};
   font-size: 12;
   margin-bottom: -3;
@@ -57,7 +61,7 @@ export const AngleWrapper = styled.View`
   z-index: 1;
 `;
 
-export const Title = styled(BlackRegular)`
+export const Title = styled(AnimatedBlackRegular)`
   color: ${p => p.color || p.theme.color.textDefault};
   font-size: 24;
   text-shadow: 0.5px 0.5px 0.5px black;
@@ -70,7 +74,7 @@ export const TrackWrapper = styled.View`
   max-height: ${p => p.height};
 `;
 
-export const Year = styled(BlackSmall)`
+export const Year = styled(AnimatedBlackSmall)`
   color: ${p => p.color || p.theme.color.textDefault};
   font-size: 17;
   margin-bottom: 5;

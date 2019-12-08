@@ -1,8 +1,6 @@
-import React, { memo, useState, useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ImageBackground, View } from 'react-native';
-
-import Artwork from '../Album/Artwork';
 
 import {
   AngleWrapper,
@@ -16,7 +14,11 @@ import {
   Year
 } from './components';
 
+import ColorSelect from '../ColorSelect';
+
 import Track, { ITEM_HEIGHT } from './Track';
+
+// TODO make HEIGHT dynamic
 const HEIGHT = 152;
 
 const diskFilter = i => ({ disk }) => (disk ? disk === i + 1 : true);
@@ -37,11 +39,15 @@ const determineHeight = numTracks => {
   return HEIGHT;
 };
 
-const Expanded = ({ album, file, leftSlashWidth, rightSlashWidth }) => {
-  const { artist, title, tracks, year } = album;
+const Expanded = ({ album, color, file, leftSlashWidth, rightSlashWidth }) => {
+  const { artist, artwork, title, tracks, year } = album;
 
   const [numDisks, setNumDisks] = useState(1);
   const [heights, setHeights] = useState(HEIGHT);
+  const [selectedTrack, setSelectedTrack] = useState({});
+
+  const selectTrack = (disk, number) => () =>
+    setSelectedTrack({ disk, number });
 
   useLayoutEffect(() => {
     // re-order disks correctly
@@ -71,15 +77,19 @@ const Expanded = ({ album, file, leftSlashWidth, rightSlashWidth }) => {
         <RightAngle width={rightSlashWidth} />
       </AngleWrapper>
       <Blur intensity={300}>
-        <Artwork file={file} size="small" />
+        <ColorSelect
+          artist={artist}
+          currentColor={artwork.color}
+          file={file}
+          textColor={color}
+          title={title}
+        />
         <InfoWrapper>
-          <Title color={album.artwork.color}>{title}</Title>
-          <Year color={album.artwork.color}>{`${artist} - ${year}`}</Year>
+          <Title style={{ color }}>{title}</Title>
+          <Year style={{ color }}>{`${artist} - ${year}`}</Year>
           {Array.from({ length: numDisks }, (_, i) => (
             <View key={i}>
-              {numDisks > 1 && (
-                <DiskName color={album.artwork.color}>{i + 1}</DiskName>
-              )}
+              {numDisks > 1 && <DiskName style={{ color }}>{i + 1}</DiskName>}
               <TrackWrapper
                 marginTop={i !== 0 && numDisks < 2}
                 height={heights[i]}
@@ -88,7 +98,16 @@ const Expanded = ({ album, file, leftSlashWidth, rightSlashWidth }) => {
                   .filter(diskFilter(i))
                   .sort(numberSort('number'))
                   .map(track => (
-                    <Track key={track.number} {...track} />
+                    <Track
+                      key={track.number}
+                      {...track}
+                      onPress={selectTrack(track.disk, track.number)}
+                      selected={
+                        track.disk === selectedTrack.disk &&
+                        track.number === selectedTrack.number
+                      }
+                      color={color}
+                    />
                   ))}
               </TrackWrapper>
             </View>
@@ -101,9 +120,10 @@ const Expanded = ({ album, file, leftSlashWidth, rightSlashWidth }) => {
 
 Expanded.propTypes = {
   album: PropTypes.object.isRequired,
+  color: PropTypes.object.isRequired,
   file: PropTypes.string.isRequired,
   leftSlashWidth: PropTypes.number.isRequired,
   rightSlashWidth: PropTypes.number.isRequired
 };
 
-export default memo(Expanded);
+export default Expanded;
