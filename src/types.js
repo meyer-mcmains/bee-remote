@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 export const navigationType = PropTypes.object.isRequired;
 
-export const themeType = PropTypes.object.isRequired;
+export const themeType = PropTypes.object;
 
 export const screenPropsType = PropTypes.shape({
   theme: themeType,
