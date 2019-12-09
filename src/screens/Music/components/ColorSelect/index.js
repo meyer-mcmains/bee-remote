@@ -18,6 +18,8 @@ const StyledTouchableOpacity = styled(TouchableOpacity).attrs({
 })`
   ${size};
   cursor: default;
+  position: absolute;
+  z-index: 1;
 `;
 
 const CanvasContainer = styled(Animated.View)`
@@ -63,7 +65,6 @@ const ColorSelect = ({
   title
 }) => {
   const canvasRef = useRef();
-  const [showSelect, setShowSelect] = useState(false);
   const [showCanvas, setShowCanvas] = useState(false);
   const [color] = useState(new Animated.Value());
   const [saveColor, setSaveColor] = useState(currentColor);
@@ -78,8 +79,6 @@ const ColorSelect = ({
     (close = false, cancel = false, save = false) => () => {
       setShowCanvas(showCanvas => !showCanvas);
       cancel && setSaveColor(currentColor);
-      !close && setShowSelect(showSelect => !showSelect);
-
       textColor.setValue(save ? saveColor : currentColor);
 
       // Animate DropDown
@@ -92,10 +91,7 @@ const ColorSelect = ({
       ];
 
       Animated.stagger(200, close ? animations.reverse() : animations).start(
-        () => {
-          close && setShowSelect(showSelect => !showSelect);
-          save && changeColor(artist, saveColor, title);
-        }
+        () => save && changeColor(artist, saveColor, title)
       );
     },
     [
@@ -121,7 +117,7 @@ const ColorSelect = ({
   }, [toggleSelect]);
 
   useEffect(() => {
-    if (canvasRef.current && showSelect) {
+    if (canvasRef.current && showCanvas) {
       const ctx = canvasRef.current.getContext('2d');
       const { canvas } = ctx;
       const imageObj = new Image();
@@ -144,7 +140,7 @@ const ColorSelect = ({
         imageObj.height * scale
       );
     }
-  }, [file, showSelect]);
+  }, [file, showCanvas]);
 
   const getColor = key => ({ nativeEvent }) => {
     const ctx = canvasRef.current.getContext('2d');
@@ -162,13 +158,16 @@ const ColorSelect = ({
 
   const showSaved = () => textColor.setValue(saveColor);
 
-  return showSelect ? (
+  return (
     <CanvasContainer style={{ marginBottom: expand }}>
-      <Artwork
-        file={file}
-        size="small"
-        style={{ position: 'absolute', top: 0 }}
-      />
+      <StyledTouchableOpacity
+        activeOpacity={1.0}
+        onContextMenu={({ nativeEvent }) => {
+          menu.popup(nativeEvent.pageX, nativeEvent.pageY);
+        }}
+      >
+        <Artwork file={file} size="small" />
+      </StyledTouchableOpacity>
       {showCanvas && (
         <canvas
           style={{
@@ -218,15 +217,6 @@ const ColorSelect = ({
         </Animated.View>
       </ButtonContainer>
     </CanvasContainer>
-  ) : (
-    <StyledTouchableOpacity
-      activeOpacity={1.0}
-      onContextMenu={({ nativeEvent }) => {
-        menu.popup(nativeEvent.pageX, nativeEvent.pageY);
-      }}
-    >
-      <Artwork file={file} size="small" />
-    </StyledTouchableOpacity>
   );
 };
 
