@@ -55,14 +55,20 @@ const Grid = ({ data }) => {
 
   // Set the selected album using the artwork file (because its a UUID)
   const setSelected = (index, item, separators) => () => {
-    setSelectedAlbum(item.artwork.file);
-    color.setValue(item.artwork.color);
-    separators.updateProps('trailing', {
-      color,
-      highlighted: true,
-      index,
-      selected: item
-    });
+    // if the album is already selected pressing it again de-selects it
+    if (item.artwork.file === selectedAlbum) {
+      setSelectedAlbum(null);
+      separators.unhighlight();
+    } else {
+      setSelectedAlbum(item.artwork.file);
+      color.setValue(item.artwork.color);
+      separators.updateProps('trailing', {
+        color,
+        highlighted: true,
+        index,
+        selected: item
+      });
+    }
   };
 
   const renderItem = ({ index, item, separators }) => {
