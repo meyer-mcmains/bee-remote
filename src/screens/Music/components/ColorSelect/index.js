@@ -67,6 +67,7 @@ const ColorSelect = ({
   const canvasRef = useRef();
   const [showCanvas, setShowCanvas] = useState(false);
   const [color] = useState(new Animated.Value());
+  const [showControls, setShowControls] = useState(false);
   const [saveColor, setSaveColor] = useState(currentColor);
 
   // DropDown Animation
@@ -78,6 +79,7 @@ const ColorSelect = ({
   const toggleSelect = useCallback(
     (close = false, cancel = false, save = false) => () => {
       setShowCanvas(showCanvas => !showCanvas);
+      !close && setShowControls(showControls => !showControls);
       cancel && setSaveColor(currentColor);
       textColor.setValue(save ? saveColor : currentColor);
 
@@ -91,7 +93,10 @@ const ColorSelect = ({
       ];
 
       Animated.stagger(200, close ? animations.reverse() : animations).start(
-        () => save && changeColor(artist, saveColor, title)
+        () => {
+          save && changeColor(artist, saveColor, title);
+          close && setShowControls(showControls => !showControls);
+        }
       );
     },
     [
@@ -183,39 +188,41 @@ const ColorSelect = ({
           onMouseLeave={showSaved}
         />
       )}
-      <ButtonContainer>
-        <Animated.View style={{ transform: [{ translateY: checkPos }] }}>
-          <CircleIconButton
-            onPress={toggleSelect(true, false, true)}
-            icon="check"
-            color="white"
-          />
-        </Animated.View>
-        <Animated.View
-          style={{
-            transform: [{ translateY: circlePos }]
-          }}
-        >
-          <ColorCircle
+      {showControls && (
+        <ButtonContainer>
+          <Animated.View style={{ transform: [{ translateY: checkPos }] }}>
+            <CircleIconButton
+              onPress={toggleSelect(true, false, true)}
+              icon="check"
+              color="white"
+            />
+          </Animated.View>
+          <Animated.View
             style={{
-              backgroundColor: color
+              transform: [{ translateY: circlePos }]
             }}
-          />
-          <ColorCircle
-            style={{
-              backgroundColor: saveColor
-            }}
-          />
-        </Animated.View>
-        <Animated.View style={{ transform: [{ translateY: xPos }] }}>
-          <CircleIconButton
-            onPress={toggleSelect(true, true)}
-            icon="x"
-            color="white"
-            status
-          />
-        </Animated.View>
-      </ButtonContainer>
+          >
+            <ColorCircle
+              style={{
+                backgroundColor: color
+              }}
+            />
+            <ColorCircle
+              style={{
+                backgroundColor: saveColor
+              }}
+            />
+          </Animated.View>
+          <Animated.View style={{ transform: [{ translateY: xPos }] }}>
+            <CircleIconButton
+              onPress={toggleSelect(true, true)}
+              icon="x"
+              color="white"
+              status
+            />
+          </Animated.View>
+        </ButtonContainer>
+      )}
     </CanvasContainer>
   );
 };
