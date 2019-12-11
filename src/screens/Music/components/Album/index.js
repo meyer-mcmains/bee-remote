@@ -4,6 +4,8 @@ import styled from 'styled-components/native';
 
 import Artwork from './Artwork';
 
+import { useDoublePress } from '@hooks';
+
 import { ARTWORK_SIZE } from '../../config';
 import { albumType } from '@types';
 
@@ -17,13 +19,18 @@ const Wrapper = styled.TouchableOpacity`
   width: ${p => ARTWORK_SIZE[p.size]}px;
 `;
 
-const Album = ({ album, file, setSelected, size }) => (
-  <Background>
-    <Wrapper onPress={setSelected} size={size}>
-      <Artwork file={file} size={size} />
-    </Wrapper>
-  </Background>
-);
+const Album = ({ album, file, setSelected, size }) => {
+  const doublePress = () => console.log('double press');
+  const onPress = useDoublePress(setSelected, doublePress);
+
+  return (
+    <Background>
+      <Wrapper onPress={onPress} size={size}>
+        <Artwork file={file} size={size} />
+      </Wrapper>
+    </Background>
+  );
+};
 
 Album.propTypes = {
   album: albumType,

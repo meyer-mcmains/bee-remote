@@ -1,3 +1,4 @@
 import useAsyncEffect from './useAsyncEffect';
+import useDoublePress from './useDoublePress';
 
-export { useAsyncEffect };
+export { useAsyncEffect, useDoublePress };
