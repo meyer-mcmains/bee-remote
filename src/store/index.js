@@ -20,6 +20,7 @@ const reducers = Object.keys(modules).reduce(
 );
 
 const config = {
+  blacklist: ['player'],
   key: rootName,
   storage: AsyncStorage,
   version: 1
