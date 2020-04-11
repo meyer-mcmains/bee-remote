@@ -1,9 +1,10 @@
 import React, { useLayoutEffect, useCallback, useState } from 'react';
 import styled from 'styled-components/native';
-import { Animated, Platform } from 'react-native';
+import { Animated, Platform, View } from 'react-native';
 
 import Album from './Album';
 import Expanded from './Expanded';
+import StatusBar from './StatusBar';
 
 import { ARTWORK_SIZE } from '../config';
 import { appData } from '@utils/filesystem';
@@ -12,6 +13,7 @@ import { libraryType } from '@types';
 const CURRENT_SIZE = 'small';
 
 const FlatList = styled.FlatList.attrs({
+  ListFooterComponent: <View style={{ height: 100 }} />,
   showsVerticalScrollIndicator: false
 })``;
 
@@ -53,14 +55,13 @@ const Grid = ({ data }) => {
   const getFlatListWidth = ({ nativeEvent }) =>
     setFlatListWidth(nativeEvent.layout.width);
 
-  // Set the selected album using the artwork file (because its a UUID)
-  const setSelected = (index, item, separators) => () => {
+  const setSelected = (index, item, separators) => (doublePressing = false) => {
     // if the album is already selected pressing it again de-selects it
-    if (item.artwork.file === selectedAlbum) {
+    if (item.albumID === selectedAlbum && !doublePressing) {
       setSelectedAlbum(null);
       separators.unhighlight();
     } else {
-      setSelectedAlbum(item.artwork.file);
+      setSelectedAlbum(item.albumID);
       color.setValue(item.artwork.color);
       separators.updateProps('trailing', {
         color,
@@ -91,7 +92,7 @@ const Grid = ({ data }) => {
     ({ highlighted, ...separatorProps }) => {
       if (!highlighted) return <></>;
       const { color, index, selected } = separatorProps;
-      if (selected.artwork.file !== selectedAlbum) return <></>;
+      if (selected.albumID !== selectedAlbum) return <></>;
 
       const leftSlashWidth =
         (flatListWidth / numRowItems) * ((index % numRowItems) + 1) -
@@ -113,8 +114,7 @@ const Grid = ({ data }) => {
     [flatListWidth, numRowItems, selectedAlbum]
   );
 
-  const keyExtractor = item =>
-    (item.artwork && item.artwork.file) || item.title;
+  const keyExtractor = item => item.albumID;
 
   return (
     <Wrapper onLayout={getContainerWidth}>
@@ -128,6 +128,7 @@ const Grid = ({ data }) => {
         extraData={color}
         renderItem={renderItem}
       />
+      <StatusBar />
     </Wrapper>
   );
 };
