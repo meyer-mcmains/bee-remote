@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 
 import Icon from '@components/Icon';
 
-import { themeType } from '@types';
+import { themeType, styleType } from '@types';
 
 const TYPES = {
   default: 'default',
@@ -16,6 +16,7 @@ const IconButton = ({
   icon,
   onPress,
   selected = true,
+  size = 30,
   style,
   theme,
   type = TYPES.default
@@ -30,7 +31,7 @@ const IconButton = ({
           : color
       }
       name={icon}
-      size={30}
+      size={size}
     />
   </TouchableOpacity>
 );
@@ -40,7 +41,8 @@ IconButton.propTypes = {
   icon: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
   selected: PropTypes.bool,
-  style: PropTypes.array,
+  size: PropTypes.number,
+  style: styleType,
   theme: themeType,
   type: PropTypes.string
 };
