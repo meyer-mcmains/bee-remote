@@ -1,11 +1,13 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styled from 'styled-components/native';
 
 import Artwork from './Artwork';
 
 import { useDoublePress } from '@hooks';
 
+import { actions } from '@modules/player';
 import { ARTWORK_SIZE } from '../../config';
 import { albumType } from '@types';
 
@@ -19,9 +21,8 @@ const Wrapper = styled.TouchableOpacity`
   width: ${p => ARTWORK_SIZE[p.size]}px;
 `;
 
-const Album = ({ album, file, setSelected, size }) => {
-  const doublePress = () => console.log('double press');
-  const onPress = useDoublePress(setSelected, doublePress);
+const Album = ({ album, file, playAlbum, setSelected, size }) => {
+  const onPress = useDoublePress(setSelected, () => playAlbum(album), true);
 
   return (
     <Background>
@@ -35,8 +36,9 @@ const Album = ({ album, file, setSelected, size }) => {
 Album.propTypes = {
   album: albumType,
   file: PropTypes.string.isRequired,
+  playAlbum: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
   size: PropTypes.string.isRequired
 };
 
-export default memo(Album);
+export default connect(null, { playAlbum: actions.playAlbum })(memo(Album));
