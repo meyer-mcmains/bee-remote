@@ -17,6 +17,7 @@ const Wrapper = styled.View`
   padding-bottom: 20;
   padding-top: 20;
   width: 70;
+  display: none;
 `;
 
 const Sidebar = ({ jumpTo, navigation, theme }) => {
