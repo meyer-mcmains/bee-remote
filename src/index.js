@@ -7,6 +7,7 @@ import Navigation from './nav';
 
 import theme, { disableText } from './theme';
 import configureStore from './store';
+import { Provider as MusicBeeProvider } from '@mbApi/context';
 
 const { persistor, store } = configureStore();
 
@@ -29,12 +30,14 @@ const Main = () => {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <ThemeProvider theme={modifiedTheme}>
-          <Navigation
-            screenProps={{
-              theme: modifiedTheme,
-              updateTheme: updateTheme.current
-            }}
-          />
+          <MusicBeeProvider>
+            <Navigation
+              screenProps={{
+                theme: modifiedTheme,
+                updateTheme: updateTheme.current
+              }}
+            />
+          </MusicBeeProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>
