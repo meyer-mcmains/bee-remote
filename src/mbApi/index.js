@@ -1,6 +1,7 @@
 import fetchWithTimeout from '@utils/fetchWithTimeout';
-// Local IP
-const IP = 'http://192.168.1.92:1234';
+import endpoint from './endpoints';
+
+const IP = `http://${endpoint}:1200`;
 
 export const getPulse = async () => {
   try {
@@ -24,3 +25,20 @@ export const getArtwork = async (artist, album, thumbnail = true) => {
   );
   return resp.json();
 };
+
+export async function playAlbum(artist, album) {
+  const resp = await fetch(
+    `${IP}/play-album?artist=${encodeURIComponent(
+      artist
+    )}&album=${encodeURIComponent(album)}`,
+    {
+      method: 'POST'
+    }
+  );
+  return resp.status === 200;
+}
+
+export async function playPause() {
+  const resp = await fetch(`${IP}/play-pause`, { method: 'POST' });
+  return resp.status === 200;
+}
