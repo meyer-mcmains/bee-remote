@@ -6,7 +6,8 @@ const web = css`
 `;
 
 const textBase = css`
-  color: ${p => (p.color ? p.theme.color[p.color] : p.theme.color.textDefault)};
+  color: ${p =>
+    (p.color ? p.theme.color[p.color] : p.theme.color.textDefault) || p.color};
   ${p => (p.theme.device.isWeb ? web : '')};
 `;
 
