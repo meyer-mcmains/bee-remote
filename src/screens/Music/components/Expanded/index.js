@@ -22,11 +22,6 @@ import Track, { ITEM_HEIGHT } from './Track';
 const HEIGHT = 152;
 
 const diskFilter = i => ({ disk }) => (disk ? disk === i + 1 : true);
-const numberSort = key => (a, b) => {
-  if (a[key] > b[key]) return 1;
-  if (a[key] < b[key]) return -1;
-  return 0;
-};
 
 const determineHeight = numTracks => {
   if (numTracks * ITEM_HEIGHT > HEIGHT) {
@@ -46,13 +41,11 @@ const Expanded = ({ album, color, file, leftSlashWidth, rightSlashWidth }) => {
   const [heights, setHeights] = useState(HEIGHT);
   const [selectedTrack, setSelectedTrack] = useState({});
 
-  const selectTrack = (disk, number) => () =>
-    setSelectedTrack({ disk, number });
+  function selectTrack(trackID) {
+    return () => setSelectedTrack(trackID);
+  }
 
   useLayoutEffect(() => {
-    // re-order disks correctly
-    tracks.sort(numberSort('disk'));
-
     // get the number of disks
     const disks = Math.max(...tracks.map(track => track.disk));
     setNumDisks(disks > 0 ? disks : 1);
@@ -94,21 +87,15 @@ const Expanded = ({ album, color, file, leftSlashWidth, rightSlashWidth }) => {
                 marginTop={i !== 0 && numDisks < 2}
                 height={heights[i]}
               >
-                {tracks
-                  .filter(diskFilter(i))
-                  .sort(numberSort('number'))
-                  .map(track => (
-                    <Track
-                      key={track.number}
-                      {...track}
-                      onPress={selectTrack(track.disk, track.number)}
-                      selected={
-                        track.disk === selectedTrack.disk &&
-                        track.number === selectedTrack.number
-                      }
-                      color={color}
-                    />
-                  ))}
+                {tracks.filter(diskFilter(i)).map(track => (
+                  <Track
+                    key={track.number}
+                    {...track}
+                    onPress={selectTrack(track.trackID)}
+                    selected={track.trackID === selectedTrack}
+                    color={color}
+                  />
+                ))}
               </TrackWrapper>
             </View>
           ))}
