@@ -1,7 +1,7 @@
 import { getArtwork, getLibrary, getPulse } from '@mbApi';
 import { mkdir, writeFile } from '@utils/filesystem';
 import { merge, updateByField } from '@utils/transforms';
-import uuid from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 
 const prefix = 'beeRemote/library';
 

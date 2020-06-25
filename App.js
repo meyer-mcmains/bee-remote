@@ -9,7 +9,9 @@ YellowBox.ignoreWarnings(['Expected style']);
 
 if (__DEV__) {
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
-  whyDidYouRender(React);
+  whyDidYouRender(React, {
+    trackAllPureComponents: true
+  });
 }
 
 export default class App extends React.Component {
