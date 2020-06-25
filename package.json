@@ -9,7 +9,6 @@
     "ios": "expo start --ios",
     "lint": "esw --color",
     "postinstall": "rndebugger-open",
-    "precommit": "lint-staged",
     "start": "expo start -w",
     "start:nw": "nw web/",
     "web": "expo start --web"
@@ -62,6 +61,11 @@
     "prettier-plugin-package": "^0.3.1",
     "react-native-debugger-open": "^0.3.22",
     "uuid": "^3.3.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.js": [
