@@ -40,8 +40,16 @@ const Wrapper = styled.TouchableOpacity`
   width: 50%;
 `;
 
-const Track = ({ color, length, name, number, onPress, selected }) => (
-  <Wrapper onPress={onPress} selected={selected}>
+const Track = ({
+  color,
+  length,
+  name,
+  number,
+  onPress,
+  selected,
+  ...props
+}) => (
+  <Wrapper onPress={() => onPress(props.trackID)} selected={selected}>
     {selected ? (
       <Svg width="100%" height="100%" style={{ height: '100%', width: '100%' }}>
         <Rect

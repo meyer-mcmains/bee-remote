@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
@@ -18,4 +18,4 @@ Icon.propTypes = {
   size: PropTypes.number
 };
 
-export default Icon;
+export default memo(Icon);

@@ -1,6 +1,6 @@
-import React, { useLayoutEffect, useCallback, useState } from 'react';
+import React, { useLayoutEffect, useCallback, useState, useRef } from 'react';
 import styled from 'styled-components/native';
-import { Animated, Platform, View } from 'react-native';
+import { Animated, Platform, FlatList } from 'react-native';
 
 import Album from './Album';
 import Expanded from './Expanded';
@@ -12,10 +12,9 @@ import { libraryType } from '@types';
 
 const CURRENT_SIZE = 'small';
 
-const FlatList = styled.FlatList.attrs({
-  ListFooterComponent: <View style={{ height: 100 }} />,
-  showsVerticalScrollIndicator: false
-})``;
+const Footer = styled.View`
+  height: 100px;
+`;
 
 const Wrapper = styled.View`
   align-items: center;
@@ -23,11 +22,12 @@ const Wrapper = styled.View`
 `;
 
 const Grid = ({ data }) => {
-  const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const selectedAlbum = useRef(null);
+  const previousSeparator = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [numRowItems, setNumRowItems] = useState(1);
-  const [extra, setExtra] = useState([]);
+  const items = useRef(data);
   const [color] = useState(new Animated.Value(null));
 
   useLayoutEffect(() => {
@@ -42,57 +42,74 @@ const Grid = ({ data }) => {
           artwork: { file: i },
           title: ''
         }));
-        setExtra(extra);
+        items.current = [...items.current, ...extra];
       }
     }
   }, [containerWidth, data.length]);
 
   // Store the width of the Container
-  const getContainerWidth = ({ nativeEvent }) =>
-    setContainerWidth(nativeEvent.layout.width);
+  const getContainerWidth = useCallback(
+    ({ nativeEvent }) => setContainerWidth(nativeEvent.layout.width),
+    []
+  );
 
   // Store the width of the FlatList
-  const getFlatListWidth = ({ nativeEvent }) =>
+  const getFlatListWidth = useCallback(({ nativeEvent }) => {
     setFlatListWidth(nativeEvent.layout.width);
+  }, []);
 
-  const setSelected = (index, item, separators) => (doublePressing = false) => {
-    // if the album is already selected pressing it again de-selects it
-    if (item.albumID === selectedAlbum && !doublePressing) {
-      setSelectedAlbum(null);
-      separators.unhighlight();
-    } else {
-      setSelectedAlbum(item.albumID);
-      color.setValue(item.artwork.color);
-      separators.updateProps('trailing', {
-        color,
-        highlighted: true,
-        index,
-        selected: item
-      });
-    }
-  };
+  const albumPress = useCallback(
+    (index, item, separators, doublePress = false) => {
+      if (typeof selectedAlbum.current !== 'undefined' && !doublePress) {
+        if (previousSeparator.current) {
+          previousSeparator.current.unhighlight();
+        }
+        if (item.albumID === selectedAlbum.current) {
+          selectedAlbum.current = null;
+          separators.unhighlight();
+        } else {
+          selectedAlbum.current = item.albumID;
+          previousSeparator.current = separators;
+          color.setValue(item.artwork.color);
+          separators.updateProps('trailing', {
+            color,
+            highlighted: true,
+            index,
+            selected: item
+          });
+        }
+      }
+    },
+    [color]
+  );
 
-  const renderItem = ({ index, item, separators }) => {
-    if ('artwork' in item === false) return <></>;
-    if (typeof item.artwork.file === 'string') {
-      return (
-        <Album
-          album={item}
-          file={`file://${appData}album-art/${item.artwork.file}`}
-          setSelected={setSelected(index, item, separators)}
-          size={CURRENT_SIZE}
-        />
-      );
-    } else {
-      return <></>;
-    }
-  };
+  const renderItem = useCallback(
+    ({ index, item, separators }) => {
+      if ('artwork' in item === false) return <></>;
+      if (typeof item.artwork.file === 'string') {
+        return (
+          <Album
+            album={item}
+            file={`file://${appData}album-art/${item.artwork.file}`}
+            setSelected={albumPress}
+            index={index}
+            separators={separators}
+            size={CURRENT_SIZE}
+          />
+        );
+      } else {
+        return <></>;
+      }
+    },
+    [albumPress]
+  );
 
   const itemSeparator = useCallback(
     ({ highlighted, ...separatorProps }) => {
-      if (!highlighted) return <></>;
+      if (!highlighted || typeof selectedAlbum.current === 'undefined')
+        return <></>;
       const { color, index, selected } = separatorProps;
-      if (selected.albumID !== selectedAlbum) return <></>;
+      if (selected.albumID !== selectedAlbum.current) return <></>;
 
       const leftSlashWidth =
         (flatListWidth / numRowItems) * ((index % numRowItems) + 1) -
@@ -100,6 +117,7 @@ const Grid = ({ data }) => {
       const rightSlashWidth =
         (flatListWidth / numRowItems) *
         (numRowItems - (index % numRowItems) + 1);
+      const file = `file://${appData}album-art/${selected.artwork.file}`;
       return (
         <Expanded
           color={color}
@@ -107,14 +125,14 @@ const Grid = ({ data }) => {
           leftSlashWidth={leftSlashWidth}
           rightSlashWidth={rightSlashWidth}
           album={selected}
-          file={`file://${appData}album-art/${selected.artwork.file}`}
+          file={file}
         />
       );
     },
-    [flatListWidth, numRowItems, selectedAlbum]
+    [flatListWidth, numRowItems]
   );
 
-  const keyExtractor = item => item.albumID;
+  const keyExtractor = useCallback(item => item.albumID, []);
 
   return (
     <Wrapper onLayout={getContainerWidth}>
@@ -123,10 +141,12 @@ const Grid = ({ data }) => {
         ItemSeparatorComponent={itemSeparator}
         key={numRowItems}
         keyExtractor={keyExtractor}
+        ListFooterComponent={Footer}
         numColumns={Platform.OS === 'web' ? numRowItems : 1}
-        data={[...data, ...extra]}
+        data={items.current}
         extraData={color}
         renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
       />
       <StatusBar />
     </Wrapper>

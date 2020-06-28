@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
 import { ImageBackground, View } from 'react-native';
 
@@ -41,9 +41,7 @@ const Expanded = ({ album, color, file, leftSlashWidth, rightSlashWidth }) => {
   const [heights, setHeights] = useState(HEIGHT);
   const [selectedTrack, setSelectedTrack] = useState({});
 
-  function selectTrack(trackID) {
-    return () => setSelectedTrack(trackID);
-  }
+  const selectTrack = useCallback(trackId => setSelectedTrack(trackId), []);
 
   useLayoutEffect(() => {
     // get the number of disks
@@ -91,7 +89,7 @@ const Expanded = ({ album, color, file, leftSlashWidth, rightSlashWidth }) => {
                   <Track
                     key={track.number}
                     {...track}
-                    onPress={selectTrack(track.trackID)}
+                    onPress={selectTrack}
                     selected={track.trackID === selectedTrack}
                     color={color}
                   />
@@ -113,4 +111,4 @@ Expanded.propTypes = {
   rightSlashWidth: PropTypes.number.isRequired
 };
 
-export default Expanded;
+export default memo(Expanded);

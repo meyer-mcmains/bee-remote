@@ -21,8 +21,20 @@ const Wrapper = styled.TouchableOpacity`
   width: ${p => ARTWORK_SIZE[p.size]}px;
 `;
 
-const Album = ({ album, file, playAlbum, setSelected, size }) => {
-  const onPress = useDoublePress(setSelected, () => playAlbum(album), true);
+const Album = ({
+  album,
+  file,
+  index,
+  playAlbum,
+  separators,
+  setSelected,
+  size
+}) => {
+  const onPress = useDoublePress(
+    () => setSelected(index, album, separators),
+    () => playAlbum(album),
+    true
+  );
 
   return (
     <Background>
@@ -36,7 +48,9 @@ const Album = ({ album, file, playAlbum, setSelected, size }) => {
 Album.propTypes = {
   album: albumType,
   file: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   playAlbum: PropTypes.func.isRequired,
+  separators: PropTypes.object.isRequired,
   setSelected: PropTypes.func.isRequired,
   size: PropTypes.string.isRequired
 };
