@@ -34,7 +34,7 @@ const Wrapper = styled(BlurView).attrs({
   align-items: center;
   justify-content: center;
   height: ${p => (p.theme.device.isWeb ? '100vh' : '100%')};
-  width: ${p => (p.theme.device.isWeb ? 'calc(100vw - 70px)' : '100%')};
+  width: 100%;
   background-color: transparent;
   position: absolute;
   right: 0;
