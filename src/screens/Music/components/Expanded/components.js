@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components/native';
-import { BlurView } from 'expo-blur';
 
 import {
   AnimatedBlackRegular,
@@ -10,7 +9,7 @@ import { ITEM_HEIGHT } from './Track';
 
 const ANGLE_HEIGHT = 20;
 
-export const Blur = styled(BlurView)`
+export const AlbumWrapper = styled.View`
   flex-direction: row;
   padding: 25px;
   padding-top: ${ANGLE_HEIGHT + 25};

@@ -1,10 +1,11 @@
 import React, { useLayoutEffect, useState, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
-import { ImageBackground, View } from 'react-native';
+import { View } from 'react-native';
+import Background from './Background';
 
 import {
+  AlbumWrapper,
   AngleWrapper,
-  Blur,
   DiskName,
   InfoWrapper,
   LeftAngle,
@@ -62,12 +63,12 @@ const Expanded = ({ album, color, file, leftSlashWidth, rightSlashWidth }) => {
   }, [numDisks, tracks]);
 
   return (
-    <ImageBackground source={{ uri: file }} resizeMode="stretch">
+    <Background file={file}>
       <AngleWrapper>
         <LeftAngle width={leftSlashWidth} />
         <RightAngle width={rightSlashWidth} />
       </AngleWrapper>
-      <Blur intensity={300}>
+      <AlbumWrapper>
         <ColorSelect
           artist={artist}
           currentColor={artwork.color}
@@ -98,8 +99,8 @@ const Expanded = ({ album, color, file, leftSlashWidth, rightSlashWidth }) => {
             </View>
           ))}
         </InfoWrapper>
-      </Blur>
-    </ImageBackground>
+      </AlbumWrapper>
+    </Background>
   );
 };
 

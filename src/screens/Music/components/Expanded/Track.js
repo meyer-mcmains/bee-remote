@@ -64,7 +64,7 @@ const Track = ({
         <Mask id={`knockout${number}`}>
           <Rect width="100%" height="100%" fill="#fff" x="0" y="0" />
           <Text
-            x="2%"
+            x="1.8%"
             y="55%"
             fill="#000"
             textAnchor="start"
@@ -74,7 +74,7 @@ const Track = ({
           >
             {number}
           </Text>
-          <Svg x="8.8%" width="78%">
+          <Svg x="7%" width="78%">
             <Defs>
               <LinearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0.5" stopColor="white" stopOpacity="0" />
@@ -94,7 +94,7 @@ const Track = ({
             <Rect fill="url(#fade)" y="0" x="90%" width="10%" />
           </Svg>
           <Text
-            x="98%"
+            x="98.5%"
             y="55%"
             fill="#000"
             textAnchor="end"
